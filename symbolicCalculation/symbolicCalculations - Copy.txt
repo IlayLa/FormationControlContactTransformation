@@ -1,0 +1,68 @@
+clc
+close all
+clearvars
+
+syms r theta nu R Theta Nu mu alpha J2 real
+
+X = [r; theta; nu; R; Theta; Nu]
+
+
+
+keplerHamiltonian = 0.5*(R^2+(Theta/r)^2)-mu/r;
+depritHamiltonian = keplerHamiltonian...
+    - J2*mu*alpha^2*(3*(Nu/Theta)^2-1)/(4*r^3);
+j2Hamiltonian = keplerHamiltonian...
+    - J2*mu*alpha^2*(1-3*sin(theta)^2*(1-(Nu./Theta)^2))/(2*r^3);
+
+varInputs = [X', mu, J2, alpha];
+
+simplify(OsculatingStateSpace_Func(0,X,mu,J2,alpha)-Poisson_Bracket(X,j2Hamiltonian,X))
+
+
+
+
+% J2 state space
+j2StateSpace = Poisson_Bracket(X,j2Hamiltonian,X);
+matlabFunction(j2StateSpace,...
+    'File',"./propagators/stateSpaces/j2StateSpace","Vars",varInputs)
+% Deprit state space
+depritStateSpace = Poisson_Bracket(X,depritHamiltonian,X);
+matlabFunction(depritStateSpace,...
+    'File',"./propagators/stateSpaces/depritStateSpace","Vars",varInputs)
+
+
+
+% Keplerian hamiltonianGradientCalculation
+keplerHamiltonianGradient = gradient(keplerHamiltonian, X)
+matlabFunction(keplerHamiltonianGradient,...
+    'File',"./symbolicCalculation/numericalFunctions/keplerGradient","Vars",varInputs)
+
+
+% J2 hamiltonianGradientCalculation
+j2HamiltonianGradient = gradient(j2Hamiltonian, X)
+matlabFunction(j2HamiltonianGradient,...
+    'File',"./symbolicCalculation/numericalFunctions/j2Gradient","Vars",varInputs)
+
+% Deprit hamiltonian gradient
+depritHamiltonianGradient = gradient(depritHamiltonian, X)
+matlabFunction(depritHamiltonianGradient,...
+    'File',"./symbolicCalculation/numericalFunctions/depritGradient","Vars",varInputs)
+
+
+
+% Keplerian hessian calculation
+keplerHamiltonianHessian = hessian(keplerHamiltonian, X)
+matlabFunction(keplerHamiltonianHessian,...
+    'File',"./symbolicCalculation/numericalFunctions/keplerHessian","Vars",varInputs)
+
+
+% J2 hessian calculation
+j2Hessian = hessian(j2Hamiltonian, X);
+matlabFunction(j2Hessian, 'File', "./symbolicCalculation/numericalFunctions/j2Hessian","Vars",varInputs);
+
+% Deprit hessian
+depritHessian = hessian(depritHamiltonian, X);
+matlabFunction(depritHessian, 'File', "./symbolicCalculation/numericalFunctions/depritHessian","Vars",varInputs);
+
+
+

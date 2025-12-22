@@ -1,0 +1,13 @@
+function [r, theta, nu, R, Theta, Nu] = RCV2toPN(lambda, gamma, nu, Lambda,Gamma, Nu, omega)
+    r = ((Lambda + Gamma).*sin(omega*((lambda + gamma)/2)).^2+...
+        (Lambda - Gamma).*sin(omega*((lambda - gamma)/2)).^2)/(omega^2);
+    
+    theta = mod(2*atan2(sqrt((Lambda - Gamma)).*sin(omega*((lambda - gamma)/2))...
+        ,sqrt((Lambda + Gamma)).*sin(omega*((lambda + gamma)/2))),2*pi);
+    
+    R = ((Lambda + Gamma).*sin(2*omega*((lambda + gamma)/2))+...
+        (Lambda - Gamma).*sin(2*omega*((lambda - gamma)/2)))./(2*omega*r);
+    
+    Theta = sqrt((Lambda + Gamma).*(Lambda - Gamma)).*sin(omega*(((lambda + gamma)/2)-...
+        ((lambda - gamma)/2)))/(2*omega);
+end
