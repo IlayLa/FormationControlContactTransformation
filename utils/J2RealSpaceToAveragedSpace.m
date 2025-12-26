@@ -1,7 +1,14 @@
-function [PolarNodalsStarDepritKeplerianSpace, COEsDepritKeplerianSpace, bridgeToDepritSpaceValue] = J2RealSpaceToAveragedSpace(RealSpaceCells, currentCoordinateSystem)
+function [PolarNodalsStarDepritKeplerianSpace, COEsDepritKeplerianSpace, bridgeToDepritSpaceValue] ...
+    = J2RealSpaceToAveragedSpace(RealSpacePostion)
+arguments (Input)
+    RealSpacePostion Position
+end
+
+
+
 % realSpaceToAveragedSpace - Take real space canonical orbital elements and
 % return averaged (Deprit) space Keplerian Polar Nodal (by 
-RealSpaceCells_PN = convertCoordinateSystem(RealSpaceCells,currentCoordinateSystem,CoordinateSystemEnum.PN);
+RealSpaceCells_PN = convertCoordinateSystem(RealSpacePostion.positionVector,Position.,CoordinateSystemEnum.PN);
 
 
 %PNo0->PNa0(averaged)

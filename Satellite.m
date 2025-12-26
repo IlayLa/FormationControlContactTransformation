@@ -3,23 +3,21 @@ classdef Satellite
     %   Detailed explanation goes here
 
     properties
-        position cell % in cells {q1,q2,q3,p4,p5,p6} 
-        coordinateSystemEnum CoordinateSystemEnum % see CoordinateSystemEnum
+        position Position
     end
     
     methods
-        function obj = Satellite(position, coordinateSystemEnum)
+        function obj = Satellite(position)
             obj.position = position;
-            obj.coordinateSystemEnum = coordinateSystemEnum;
         end
         function eci = getECI(obj)
-           eci = convertCoordinateSystem(obj.position, obj.coordinateSystemEnum, CoordinateSystemEnum.ECI);
+           eci = convertCoordinateSystem(obj.position.positionVector, obj.position.type, CoordinateSystemEnum.ECI);
         end
         function coe = getCOE(obj)
-            coe = convertCoordinateSystem(obj.position, obj.coordinateSystemEnum, CoordinateSystemEnum.COE);
+            coe = convertCoordinateSystem(obj.position.positionVector, obj.position.type, CoordinateSystemEnum.COE);
         end
         function pn = getPolarNodal(obj)
-            pn = convertCoordinateSystem(obj.position, obj.coordinateSystemEnum, CoordinateSystemEnum.PN);
+            pn = convertCoordinateSystem(obj.position.positionVector, obj.position.type, CoordinateSystemEnum.PN);
         end
     end
 end

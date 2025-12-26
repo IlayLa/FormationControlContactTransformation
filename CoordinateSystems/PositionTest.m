@@ -24,11 +24,20 @@ classdef PositionTest < matlab.unittest.TestCase
         end
 
         function testGetAsWithInvalidType(testCase)
-            type1 = CoordinateSystemEnum.Cartesian;
+            type1 = CoordinateSystemEnum.ECI;
             position = {1, 0, 1, 10, 1, 0}; 
 
             obj = Position(type1, position);
-            testCase.verifyError(@() obj.getAs('InvalidType'), 'MATLAB:invalidType'); 
+            testCase.verifyError(@() obj.getAs('InvalidType'), 'MATLAB:validation:UnableToConvert'); 
+        end
+
+        function testGetAsWithInvalidPosition(testCase)
+            type1 = CoordinateSystemEnum.ECI;
+            position = {[1,1], [0,0], [1,1], [10,1], [1,pi], [0,-1]}; 
+
+            obj = Position(type1, position);
+
+            % testCase.verifyError(@() obj.getAs('InvalidType'), 'MATLAB:invalidType'); 
         end
     end
 end

@@ -4,21 +4,21 @@ classdef Position
 
     properties
         type CoordinateSystemEnum
-        position (:,6)cell
+        positionVector (1,6)cell
     end
 
     methods
         function obj = Position(type, position)
             arguments (Input)
                 type CoordinateSystemEnum
-                position (:,6)cell
+                position (1,6)cell
             end
             arguments (Output)
                 obj Position
             end
             
             obj.type = type;
-            obj.position = position;
+            obj.positionVector = position;
         end
 
 
@@ -30,9 +30,8 @@ classdef Position
             arguments (Output)
                 position Position
             end
-            pos = convertCoordinateSystem(obj.position, obj.type, type);
+            pos = convertCoordinateSystem(obj.positionVector, obj.type, type);
             position = Position(type, pos);
         end
-
     end
 end

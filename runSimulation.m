@@ -20,13 +20,12 @@ aop0 = deg2rad(146.8877);
 aota0 = 0;
 approximateOrbitalPeriod = 2*pi*sqrt(sma0^3/Consts.mu);
 
-COE0 = {sma0,ecc0,inc0,raan0,aop0,aota0};
-leader = Satellite(COE0,CoordinateSystemEnum.COE);
+COE0 = Position("COE",{sma0,ecc0,inc0,raan0,aop0,aota0});
+leader = Satellite(COE0);
 
 [~, COEsDepritKeplerianSpaceInitialConditions, bridge] ...
     = J2RealSpaceToAveragedSpace(...
-    leader.position,...
-    leader.coordinateSystemEnum);
+    leader.position);
 
 follower_COEsDepritKeplerianSpaceInitialConditions =...
     COEsDepritKeplerianSpaceInitialConditions;
