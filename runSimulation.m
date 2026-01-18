@@ -24,8 +24,7 @@ COE0 = Position("COE",{sma0,ecc0,inc0,raan0,aop0,aota0});
 leader = Satellite(COE0);
 
 [~, COEsDepritKeplerianSpaceInitialConditions, bridge] ...
-    = J2RealSpaceToAveragedSpace(...
-    leader.position);
+    = J2RealSpaceToAveragedSpace(leader.position);
 
 follower_COEsDepritKeplerianSpaceInitialConditions =...
     COEsDepritKeplerianSpaceInitialConditions;

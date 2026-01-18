@@ -7,12 +7,12 @@ end
 
 
 % realSpaceToAveragedSpace - Take real space canonical orbital elements and
-% return averaged (Deprit) space Keplerian Polar Nodal (by 
-RealSpaceCells_PN = convertCoordinateSystem(RealSpacePostion.positionVector,Position.,CoordinateSystemEnum.PN);
+% return averaged (Deprit) space Keplerian Polar Nodal
+RealSpaceCells_PN = RealSpacePostion.getAs("PN").positionVector;
 
 
 %PNo0->PNa0(averaged)
-bridgeToDepritSpaceValue = bridgeToDepritSpace(RealSpaceCells_PN{:},Consts.mu,Consts.J2,Consts.Req);
+bridgeToDepritSpaceValue = bridgeToDepritSpace(RealSpacePostion.getAs("PN").positionVector{:},Consts.mu,Consts.J2,Consts.Req);
 
 if size(RealSpaceCells_PN{1}) == 1
     PolarNodalsDepritJ2Space = num2cell([RealSpaceCells_PN{:}]+bridgeToDepritSpaceValue);
