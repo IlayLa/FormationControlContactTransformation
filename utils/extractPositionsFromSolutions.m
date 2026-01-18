@@ -1,5 +1,5 @@
 function [PolarNodalsRealSpaceSimResults,PolarNodalsDepritKeplerianSpace]...
-    = extractPositionsFromSolutions(S,numOfSatellites)
+    = extractPositionsFromSolutions(S,numOfSatellites, bridgeFunction)
 
 PolarNodalsRealSpaceSimResults = cell(numOfSatellites,1);
 for i = 1:numOfSatellites
@@ -15,7 +15,8 @@ for index = 1:numOfSatellites
     [PolarNodalsDepritKeplerianSpace{index}, ~]...
         = J2RealSpaceToAveragedSpace(...
         PolarNodalsRealSpaceSimResults{index},...
-        CoordinateSystemEnum.PN);
+        CoordinateSystemEnum.PN, ...
+        bridgeFunction);
 end
 
 end

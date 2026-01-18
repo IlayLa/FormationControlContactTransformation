@@ -1,4 +1,4 @@
-function PNInJ2RealSpace = KeplerianAveragedSpaceToJ2RealSpace(KeplerianAveragedSpaceCells, currentCoordinateSystem)
+function PNInJ2RealSpace = KeplerianAveragedSpaceToJ2RealSpace(KeplerianAveragedSpaceCells, currentCoordinateSystem, bridgeFunction)
 
 COEsInKeplerianAveragedSpace = convertCoordinateSystem(KeplerianAveragedSpaceCells, currentCoordinateSystem, CoordinateSystemEnum.COE);
 
@@ -8,7 +8,7 @@ COEsInKeplerianAveragedSpace = convertCoordinateSystem(KeplerianAveragedSpaceCel
 [PNInJ2AveragedSpace{1:6}] = PNstartoPN(PNInKeplerianAveragedSpace{:}, Consts.mu,Consts.J2,Consts.Req);
 
 %PNa1->PNoA1(Analytical)
-bridgeToDepritSpaceValue = bridgeToDepritSpace(PNInJ2AveragedSpace{:},Consts.mu,Consts.J2,Consts.Req);
+bridgeToDepritSpaceValue = bridgeFunction(PNInJ2AveragedSpace{:},Consts.mu,Consts.J2,Consts.Req);
 if size(PNInJ2AveragedSpace{1}) == 1
     PNInJ2RealSpace = num2cell([PNInJ2AveragedSpace{:}]-bridgeToDepritSpaceValue);
 else 

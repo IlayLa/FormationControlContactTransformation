@@ -1,11 +1,11 @@
-function [PolarNodalsStarDepritKeplerianSpace, COEsDepritKeplerianSpace, bridgeToDepritSpaceValue] = J2RealSpaceToAveragedSpace(RealSpaceCells, currentCoordinateSystem)
+function [PolarNodalsStarDepritKeplerianSpace, COEsDepritKeplerianSpace, bridgeToDepritSpaceValue] = J2RealSpaceToAveragedSpace(RealSpaceCells, currentCoordinateSystem, bridgeFunction)
 % realSpaceToAveragedSpace - Take real space canonical orbital elements and
 % return averaged (Deprit) space Keplerian Polar Nodal (by 
 RealSpaceCells_PN = convertCoordinateSystem(RealSpaceCells,currentCoordinateSystem,CoordinateSystemEnum.PN);
 
 
 %PNo0->PNa0(averaged)
-bridgeToDepritSpaceValue = bridgeToDepritSpace(RealSpaceCells_PN{:},Consts.mu,Consts.J2,Consts.Req);
+bridgeToDepritSpaceValue = bridgeFunction(RealSpaceCells_PN{:},Consts.mu,Consts.J2,Consts.Req);
 
 if size(RealSpaceCells_PN{1}) == 1
     PolarNodalsDepritJ2Space = num2cell([RealSpaceCells_PN{:}]+bridgeToDepritSpaceValue);

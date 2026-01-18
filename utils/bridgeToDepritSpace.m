@@ -1,4 +1,4 @@
-function DeltaX = bridgeToDepritSpace(r,theta,nu,R,Theta,Nu,mu,J2,Req)
+function DeltaX = bridgeToDepritSpace(r,theta,~,R,Theta,Nu,mu,J2,Req)
 %DeltaXFunc
 %    DeltaX = DeltaXFunc(r,THETA,NU,R,Theta,Nu,MU,J2,ALPHA)
 
