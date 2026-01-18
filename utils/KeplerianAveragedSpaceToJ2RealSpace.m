@@ -1,4 +1,6 @@
 function PNInJ2RealSpace = KeplerianAveragedSpaceToJ2RealSpace(KeplerianAveragedSpaceCells, currentCoordinateSystem, bridgeFunction)
+    
+
 
 COEsInKeplerianAveragedSpace = convertCoordinateSystem(KeplerianAveragedSpaceCells, currentCoordinateSystem, CoordinateSystemEnum.COE);
 

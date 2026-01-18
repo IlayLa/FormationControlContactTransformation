@@ -1,20 +1,16 @@
-function satellitesVector = createLeaderAndFollowerSatelliteVector(COE0,followerIntialDeltaFromLeaderCOEinDeprit, bridgeFunction)
+function satellitesVector = createLeaderAndFollowerSatelliteVector(initialLeaderPosition,followerIntialDeltaFromLeaderCOEinDeprit, bridgeFunction)
 arguments (Input)
-    COE0 (6,1)cell
+    initialLeaderPosition Position
     followerIntialDeltaFromLeaderCOEinDeprit(6,1)cell
     bridgeFunction function_handle
 end
 
-leader = Satellite(COE0,CoordinateSystemEnum.COE);
+leader = Satellite(initialLeaderPosition);
 
-[~, COEsDepritKeplerianSpaceInitialConditions, ~] ...
-    = J2RealSpaceToAveragedSpace(...
-    leader.position,...
-    leader.coordinateSystemEnum, ...
-    bridgeFunction);
+leaderDepritKeplerianSpaceInitialConditions = leader.position.getPositionInKeplerianDepritSpace(bridgeFunction);
 
 follower_COEsDepritKeplerianSpaceInitialConditions =...
-    COEsDepritKeplerianSpaceInitialConditions;
+    leaderDepritKeplerianSpaceInitialConditions.getAs("COE").positionVector;
 
 
 for index = 1:Consts.numOfVarsInSS

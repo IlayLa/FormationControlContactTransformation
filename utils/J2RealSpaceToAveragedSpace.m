@@ -1,27 +1,28 @@
-function [PolarNodalsStarDepritKeplerianSpace, COEsDepritKeplerianSpace, bridgeToDepritSpaceValue] ...
-    = J2RealSpaceToAveragedSpace(RealSpacePostion)
+function [polarNodalsStarDepritKeplerianSpace, coeDepritKeplerianSpace, bridgeToDepritSpaceValue] ...
+    = J2RealSpaceToAveragedSpace(realSpacePostion, bridgeFunction)
 arguments (Input)
-    RealSpacePostion Position
+    realSpacePostion Position
+    bridgeFunction function_handle
 end
 
 
 
 % realSpaceToAveragedSpace - Take real space canonical orbital elements and
 % return averaged (Deprit) space Keplerian Polar Nodal
-RealSpaceCells_PN = RealSpacePostion.getAs("PN").positionVector;
+realSpaceCells_PN = realSpacePostion.getAs("PN").positionVector;
 
 
 %PNo0->PNa0(averaged)
-bridgeToDepritSpaceValue = bridgeToDepritSpace(RealSpacePostion.getAs("PN").positionVector{:},Consts.mu,Consts.J2,Consts.Req);
+bridgeToDepritSpaceValue = bridgeFunction(realSpacePostion.getAs("PN").positionVector{:},Consts.mu,Consts.J2,Consts.Req);
 
-if size(RealSpaceCells_PN{1}) == 1
-    PolarNodalsDepritJ2Space = num2cell([RealSpaceCells_PN{:}]+bridgeToDepritSpaceValue);
+if size(realSpaceCells_PN{1}) == 1
+    PolarNodalsDepritJ2Space = num2cell([realSpaceCells_PN{:}]+bridgeToDepritSpaceValue);
 else 
-    PolarNodalsDepritJ2Space = mat2cell([RealSpaceCells_PN{:}]+bridgeToDepritSpaceValue, length(RealSpaceCells_PN{1}), ones(1,6));
+    PolarNodalsDepritJ2Space = mat2cell([realSpaceCells_PN{:}]+bridgeToDepritSpaceValue, length(realSpaceCells_PN{1}), ones(1,6));
 end
 %PNa0->PNs0(turning the J2 problem to a keplerian problem)
-[PolarNodalsStarDepritKeplerianSpace{1:6}]  = PNtoPNstar(PolarNodalsDepritJ2Space{:},Consts.mu,Consts.J2,Consts.Req);
+[polarNodalsStarDepritKeplerianSpace{1:6}]  = PNtoPNstar(PolarNodalsDepritJ2Space{:},Consts.mu,Consts.J2,Consts.Req);
 
 %PN*->COE*
-[COEsDepritKeplerianSpace{1:6}] = PNtoCOE(PolarNodalsStarDepritKeplerianSpace{:},Consts.mu);%[sma,ecc,inc,raan,aop,aota]
+[coeDepritKeplerianSpace{1:6}] = PNtoCOE(polarNodalsStarDepritKeplerianSpace{:},Consts.mu);%[sma,ecc,inc,raan,aop,aota]
 end

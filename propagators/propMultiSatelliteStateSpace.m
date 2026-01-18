@@ -1,4 +1,8 @@
-function S = propMultiSatelliteStateSpace(initialConditions, timeVector, eventFunctions, stateSpaceEnum)
+function S = propMultiSatelliteStateSpace(satellites, timeVector, eventFunctions, stateSpaceEnum)
+
+
+
+initialConditions = satellitesVectorToODEInitialConditions(satellites);
 
 % ---- vectorize satellite dynamics ----
 singleSatFcn = stateSpaceEnum.fn;     

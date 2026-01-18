@@ -8,16 +8,37 @@ classdef Satellite
     
     methods
         function obj = Satellite(position)
+            arguments (Input)
+                position Position
+            end
+            arguments (Output)
+                obj Satellite
+            end
             obj.position = position;
         end
+        function positionVector = getPositionVector(obj)
+            arguments (Output)
+                positionVector (1,6)cell
+            end
+            positionVector = obj.position.positionVector;
+        end
+        function coordinateSystemType = getCoordinateSystemType(obj)
+            coordinateSystemType = obj.position.coordinateSystemType;
+        end
         function eci = getECI(obj)
-           eci = convertCoordinateSystem(obj.position.positionVector, obj.position.type, CoordinateSystemEnum.ECI);
+           eci = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.ECI);
         end
         function coe = getCOE(obj)
-            coe = convertCoordinateSystem(obj.position.positionVector, obj.position.type, CoordinateSystemEnum.COE);
+            coe = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.COE);
         end
         function pn = getPolarNodal(obj)
-            pn = convertCoordinateSystem(obj.position.positionVector, obj.position.type, CoordinateSystemEnum.PN);
+            pn = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.PN);
         end
+
+        function newSatellite = applyDeltaInDepritKeplerWorld(obj, deltaPosition)
+
+        end
+
+
     end
 end

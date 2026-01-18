@@ -1,7 +1,7 @@
 function [convertedPosition] = convertCoordinateSystem(position, currentCoordinateSystem, desiredCoordinateSystem)
 switch currentCoordinateSystem
     case desiredCoordinateSystem
-       convertedPosition = position;
+        convertedPosition = position;
     case CoordinateSystemEnum.PN
         switch desiredCoordinateSystem
             case CoordinateSystemEnum.ECI
@@ -26,7 +26,7 @@ switch currentCoordinateSystem
         end
     case CoordinateSystemEnum.COE
         switch desiredCoordinateSystem
-            case CoordinateSystemEnum.PN
+            case {CoordinateSystemEnum.PN, CoordinateSystemEnum.PNSTAR}
                 [convertedPosition{1:6}] = COEtoPN(position{:}, Consts.mu);
             case CoordinateSystemEnum.ECI
                 [convertedPosition{1:6}] = COEtoECI(position{:}, Consts.mu);
@@ -39,14 +39,28 @@ switch currentCoordinateSystem
         error("unsupported conversions")
     case CoordinateSystemEnum.PARABOLIC
         switch desiredCoordinateSystem
-            case CoordinateSystemEnum.PN
+            case {CoordinateSystemEnum.PN, CoordinateSystemEnum.PNSTAR}
                 [convertedPosition{1:6}] = PARAtoPN(position{:});
             otherwise
                 error("this conversion from PARABOLIC is not supported")
         end
+    case CoordinateSystemEnum.PNSTAR
+        switch desiredCoordinateSystem
+            case CoordinateSystemEnum.ECI
+                [convertedPosition{1:6}] = PN2ECI(position{:});
+            case CoordinateSystemEnum.COE
+                [convertedPosition{1:6}] = PNtoCOE(position{:}, Consts.mu);
+            case CoordinateSystemEnum.PN
+                [convertedPosition{1:6}] = PNstartoPN(position{:}, Consts.mu, Consts.J2, Consts.Req);
+            case CoordinateSystemEnum.PARABOLIC
+                [convertedPosition{1:6}] = PNtoPARA(position{:});
+            otherwise
+                error("this conversion from PN is not supported")
+        end
+
     otherwise
-    error("this conversion from the current coordinate system is not supported")
-  
+        error("this conversion from the current coordinate system is not supported")
+
 end
 
 
