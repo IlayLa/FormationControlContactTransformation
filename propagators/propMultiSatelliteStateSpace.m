@@ -1,10 +1,5 @@
-function S = propMultiSatelliteStateSpace(satellites, timeVector, eventFunctions, stateSpaceEnum)
-numOfSatellites = length(satellites);
-initialConditions = zeros(numOfSatellites,1);
-for index = 1:numOfSatellites
-    polarNodalPositionCell = satellites(index).getPolarNodal();
-    initialConditions(((index-1)*6+1):index*6) = [polarNodalPositionCell{:}];
-end
+function S = propMultiSatelliteStateSpace(initialConditions, timeVector, eventFunctions, stateSpaceEnum)
+
 % ---- vectorize satellite dynamics ----
 singleSatFcn = stateSpaceEnum.fn;     
 multiSatFcn  = @(t, X) multiSatVectorized(t, X, singleSatFcn);
@@ -19,11 +14,6 @@ ode_def.Solver = "ode45";
 ode_def.RelativeTolerance = Defaults.RelTolerance;
 ode_def.AbsoluteTolerance = Defaults.AbsTolerance;
 S = ode_def.solve(timeVector);
-timeVector = S.Time;
-Y = S.Solution';
-
-PolarNodalsRealSpaceSimResults = mat2cell(Y(:,1:6),length(timeVector),ones(1,6));
-
 end
 
 function dX = multiSatVectorized(t, X, singleSatFcn)
