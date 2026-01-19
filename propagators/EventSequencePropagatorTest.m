@@ -46,14 +46,14 @@ title('Event Sequence Propagation');
 grid on;
 
 %% Post-event functions
-function [y_new, mem_new, customData] = bounce1(t, y, mem)
+function [y_new, mem_new, customData] = bounce1(~, y, mem)
     y_new = [y(1); -mem.restitution * y(2)];
     mem_new = mem;
     mem_new.bounceCount = mem.bounceCount + 1;
     customData.impactVel = y(2);
 end
 
-function [y_new, mem_new, customData] = bounce2(t, y, mem)
+function [y_new, mem_new, customData] = bounce2(~, y, mem)
     mem_new = mem;
     mem_new.restitution = 0.6;
     y_new = [y(1); -mem_new.restitution * y(2)];
@@ -61,7 +61,7 @@ function [y_new, mem_new, customData] = bounce2(t, y, mem)
     customData.impactVel = y(2);
 end
 
-function [y_new, mem_new, customData] = bounce3(t, y, mem)
+function [y_new, mem_new, customData] = bounce3(~, y, mem)
     y_new = [y(1); -mem.restitution * y(2)];
     mem_new = mem;
     mem_new.restitution = 1.0;

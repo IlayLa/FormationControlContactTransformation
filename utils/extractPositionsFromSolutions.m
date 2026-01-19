@@ -1,6 +1,12 @@
 function [PolarNodalsRealSpaceSimResults,PolarNodalsDepritKeplerianSpace]...
     = extractPositionsFromSolutions(S,numOfSatellites, bridgeFunction)
 
+
+    
+
+
+
+
 PolarNodalsRealSpaceSimResults = cell(numOfSatellites,1);
 for i = 1:numOfSatellites
     PolarNodalsRealSpaceSimResults{i} = cell(Consts.numOfVarsInSS,1); 

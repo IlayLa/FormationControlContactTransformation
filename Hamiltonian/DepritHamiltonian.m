@@ -1,6 +1,9 @@
-function depritHamil = DepritHamiltonian(position, currentcoordinateSystem)
-position_PN = convertCoordinateSystem(position, currentcoordinateSystem, CoordinateSystemEnum.PN);
-[r,~,~,R,Theta,Nu] = position_PN{:};
+function depritHamil = DepritHamiltonian(position)
+arguments (Input)
+    position Position
+end
+
+[r,~,~,R,Theta,Nu] = position.getAs("PN").positionVector{:};
 
 
 constantPart = Consts.J2.*Consts.mu.*(Consts.Req.^2);

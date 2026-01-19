@@ -1,6 +1,8 @@
-function j2Hamil = J2Hamiltonian(position, currentcoordinateSystem)
-position_PN = convertCoordinateSystem(position, currentcoordinateSystem, CoordinateSystemEnum.PN);
-[r,theta,~,R,Theta,Nu] = position_PN{:};
+function j2Hamil = J2Hamiltonian(position)
+arguments (Input)
+    position Position
+end
+[r,theta,~,R,Theta,Nu] = position.getAs("PN").positionVector{:};
 
 constantPart = Consts.mu.*Consts.J2.*Consts.Req.^2;
 

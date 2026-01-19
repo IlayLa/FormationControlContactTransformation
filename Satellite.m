@@ -36,7 +36,7 @@ classdef Satellite
         end
 
         function newSatellite = applyDeltaInDepritKeplerWorld(obj, deltaPosition)
-
+            
         end
 
 

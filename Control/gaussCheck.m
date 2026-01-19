@@ -7,8 +7,8 @@ coe = [7000, 0.1, 1.0, 1.0, 1.0, 1.0]
 G = gaussVariationalEquations(coe, Consts.mu)
 
 delta = 0.1;
-deltaVMag = delta/norm(G(3,:))
-deltaV = G(3,:)*deltaVMag/norm(G(3,:))
+deltaVMag = delta/norm(G(1,:))
+deltaV = G(1,:)*deltaVMag/norm(G(1,:))
 
 
 X = cell2mat(convertCoordinateSystem(num2cell(coe),CoordinateSystemEnum.COE, CoordinateSystemEnum.ECI))
