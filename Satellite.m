@@ -35,8 +35,11 @@ classdef Satellite
             pn = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.PN);
         end
 
-        function newSatellite = applyDeltaInDepritKeplerWorld(obj, deltaPosition)
-            
+        function newSatellite = applyDeltaInDepritKeplerWorld(obj, positionDelta, bridgeFunction)
+            newSatellite = Satellite(...
+            obj.position.getPositionInKeplerianDepritSpace(bridgeFunction)...
+            .addPositionDelta(positionDelta)...
+            .getPositionInFullJ2World(bridgeFunction));
         end
 
 
