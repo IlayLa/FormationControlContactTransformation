@@ -1,4 +1,4 @@
-classdef Position
+classdef Position < handle
     %COORDINATES Summary of this class goes here
     %   Detailed explanation goes here
 
@@ -79,7 +79,7 @@ classdef Position
         end
 
 
-        function newPosition = addPositionDelta(obj, positionDelta)
+        function newPosition = add(obj, positionDelta)
             arguments (Input)
                 obj Position
                 positionDelta Position
@@ -91,6 +91,10 @@ classdef Position
                 error("Can't add position delta between two different coordinate systems. Got: " + ...
                     string(obj.coordinateSystemType) + " and " + string(positionDelta.coordinateSystemType))
             end
+            if (positionDelta.worldType ~= obj.worldType)
+                error("Can't add position delta between two different world types. Got: " + ...
+                    string(obj.worldType) + " and " + string(positionDelta.worldType))
+            end
             newPosition = Position(obj.coordinateSystemType,...
                 num2cell([obj.positionVector{:}]+[positionDelta.positionVector{:}]));
             newPosition.worldType = obj.worldType;
@@ -99,6 +103,9 @@ classdef Position
         function worldType = getWorldType(obj)
             worldType = obj.worldType;
         end
-
+        
+        function obj = setWorldType(obj, worldType)
+            obj.worldType = worldType;
+        end
     end
 end

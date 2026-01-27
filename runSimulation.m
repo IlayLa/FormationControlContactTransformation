@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*30;
+maxTime = day*2;
 timeVector = linspace(0,maxTime, 1e5+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
@@ -33,21 +33,19 @@ initialLeaderPosition = Position("COE",...
 leader = Satellite(initialLeaderPosition);
 
 
-followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3});
+followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3}).setWorldType("DEPRIT_KEPLER");
+deltaV = Position("ECI",{0,0,0,-0.00022,-0.00022,0});
+
+
 
 odeEvents = {0};
-S = cell(4,1);
-bridges = {@bridgeToDepritSpace, @zeroMeanBridgeDeltaVector, @zeroChangeBridge};
+S = cell(2,1);
 
 
 for index = 1:numel(S)
-    if index<numel(S)
-        chosenBridge = bridges{index};
-        follower = leader.applyDeltaInDepritKeplerWorld(followerIntialDeltaFromLeaderCOE, chosenBridge);
-    else
-        chosenBridge = @zeroChangeBridge;
-        follower = Satellite(leader.position.getAs("COE")...
-            .addPositionDelta(followerIntialDeltaFromLeaderCOE));
+    follower = leader.applyDeltaInDepritKeplerWorld(followerIntialDeltaFromLeaderCOE, chosenBridgeFunctionHandle);
+    if index==2
+        follower = Satellite(follower.position.getAs("ECI").add(deltaV).getAs("PN"));
     end
 
     satellites = [leader,follower];
@@ -60,7 +58,7 @@ for index = 1:numel(S)
         StateSpaceEnum.J2);
 
     [PolarNodalsRealSpaceSimResults,PolarNodalsDepritSimResults] = ...
-        extractPositionsFromSolutions(S{index}, numOfSatellites, chosenBridge);
+        extractPositionsFromSolutions(S{index}, numOfSatellites, chosenBridgeFunctionHandle);
 
     dist{index} = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1}, ...
         PolarNodalsRealSpaceSimResults{2});

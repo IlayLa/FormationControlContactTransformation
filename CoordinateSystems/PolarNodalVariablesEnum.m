@@ -15,8 +15,5 @@ classdef PolarNodalVariablesEnum < int32
         function s = label(obj)
             s = char(obj);
         end
-        function rng = defaultRange(obj)
-            % all your defaults here
-        end
     end
 end

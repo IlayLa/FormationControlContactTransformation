@@ -26,19 +26,19 @@ classdef Satellite
             coordinateSystemType = obj.position.coordinateSystemType;
         end
         function eci = getECI(obj)
-           eci = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.ECI);
+            eci = obj.position.getAs("ECI").positionVector;
         end
         function coe = getCOE(obj)
-            coe = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.COE);
+            coe = obj.position.getAs("COE").positionVector;
         end
         function pn = getPolarNodal(obj)
-            pn = convertCoordinateSystem(obj.position.positionVector, obj.position.coordinateSystemType, CoordinateSystemEnum.PN);
+            pn = obj.position.getAs("PN").positionVector;
         end
 
         function newSatellite = applyDeltaInDepritKeplerWorld(obj, positionDelta, bridgeFunction)
             newSatellite = Satellite(...
             obj.position.getPositionInKeplerianDepritSpace(bridgeFunction)...
-            .addPositionDelta(positionDelta)...
+            .add(positionDelta)...
             .getPositionInFullJ2World(bridgeFunction));
         end
 
