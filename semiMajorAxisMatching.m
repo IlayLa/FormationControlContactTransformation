@@ -52,7 +52,7 @@ funct = @(vx,vy) optimizationMetric( Position("ECI",{0,0,0,vx,vy,0}),...
  follower, chosenBridgeFunctionHandle, leader);
 
 
-lim = 0.001;
+lim = 0.00001;
 num = 101;
 
 vx = linspace(-lim,lim,num);
@@ -65,13 +65,13 @@ for idx = 1:num
         solutions(idx,jdx) = funct(vx(idx),vy(jdx));
     end
 end
-mesh(vx, vy, solutions)
-hold on
-[~, I] = min(solutions);
-plot3(vx(I(1)),vy(I(2)),solutions(I(1),I(2)),"Marker","o","MarkerSize",12)
-
-VX = vx(I(1))
-VY = vy(I(2))
+% mesh(vx, vy, solutions)
+% hold on
+minSol = min(solutions,[],"all");
+% plot3(vx(I(1)),vy(I(2)),solutions(I(1),I(2)),"Marker","o","MarkerSize",12)
+[r,c] = find(solutions==minSol);
+VX = vx(r)
+VY = vy(c)
 
 
 function opt = optimizationMetric(dV,sat,bridgeFunction,leader)
@@ -91,7 +91,8 @@ function opt = optimizationMetric(dV,sat,bridgeFunction,leader)
     leaderPositionVector = leader.position.getPositionInKeplerianDepritSpace(bridgeFunction).positionVector;
     
     opt = abs(followerPositionVector{CanonicalElementsEnum.SMA}-leaderPositionVector{CanonicalElementsEnum.SMA})/leaderPositionVector{CanonicalElementsEnum.SMA}... 
-    + abs(followerPositionVector{CanonicalElementsEnum.INC}-leaderPositionVector{CanonicalElementsEnum.INC})/leaderPositionVector{CanonicalElementsEnum.INC};
+    + abs(followerPositionVector{CanonicalElementsEnum.INC}-leaderPositionVector{CanonicalElementsEnum.INC})/leaderPositionVector{CanonicalElementsEnum.INC}...
+    + abs(followerPositionVector{CanonicalElementsEnum.ECC}-leaderPositionVector{CanonicalElementsEnum.ECC})/leaderPositionVector{CanonicalElementsEnum.ECC};
 
 
 end
