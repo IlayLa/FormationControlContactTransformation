@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*30;
+maxTime = day*150;
 timeVector = linspace(0,maxTime, 1e5+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
@@ -63,7 +63,12 @@ for index = 1:numel(S)
     dist{index} = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1}, ...
         PolarNodalsRealSpaceSimResults{2});
 
-    plot(timeVector/approximateOrbitalPeriod, dist{index}-dist{index}(1))
+    plot(timeVector/day, dist{index}-dist{index}(1))
     hold on
 end
+title("Satellite Distance Drift From Initial Distance")
+subtitle("Normalized Initial Distance To Zero")
+xlabel("time [days]")
+ylabel("Distance Drift [km]")
+legend("only initial conditions","initial conditions with added pulse")
 
