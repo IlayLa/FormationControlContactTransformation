@@ -4,10 +4,15 @@ arguments (Input)
 end
 
 [r,~,~,R,Theta,Nu] = position.getAs("PN").positionVector{:};
+[~,ecc,~,~,~,aota] = position.getAs("COE").positionVector{:};
 
 
-constantPart = Consts.J2.*Consts.mu.*(Consts.Req.^2);
+
+k = -Consts.J2*(Consts.Req^2)/2;
+c = Nu/Theta;
+p = r*(1+ecc*cos(aota));
+
 depritHamil = KeplerHamiltonian(r,R,Theta) ...
-    - constantPart.*(-1+3.*((Nu./Theta).^2))./(4.*r.^3);
+    + k*Consts.mu*(1-3*c^2)/(2*p*r^2);
 
 end

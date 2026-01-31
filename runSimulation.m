@@ -9,8 +9,8 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*150;
-timeVector = linspace(0,maxTime, 1e5+1);
+maxTime = day*0.01;
+timeVector = linspace(0,maxTime, 1e3+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
 initialEccentricity = 0.0002542;
@@ -33,8 +33,8 @@ initialLeaderPosition = Position("COE",...
 leader = Satellite(initialLeaderPosition);
 
 
-followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3}).setWorldType("DEPRIT_KEPLER");
-deltaV = Position("ECI",{0,0,0,6e-07,2e-06,0});
+followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,-pi*0.5}).setWorldType("DEPRIT_KEPLER");
+deltaV = Position("ECI",{0,0,0,-1.20141e-05,5.28945e-05,3.91717e-05});
 
 
 
@@ -71,4 +71,7 @@ subtitle("Normalized Initial Distance To Zero")
 xlabel("time [days]")
 ylabel("Distance Drift [km]")
 legend("only initial conditions","initial conditions with added pulse")
+
+
+
 

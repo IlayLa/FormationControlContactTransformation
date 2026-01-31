@@ -3,7 +3,7 @@ close all
 clear
 format longG
 addpath(genpath('./'));
-
+disp("hi")
 
 minute = 60;
 hour = 60*minute;
@@ -33,7 +33,7 @@ initialLeaderPosition = Position("COE",...
 leader = Satellite(initialLeaderPosition);
 
 
-followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3}).setWorldType("DEPRIT_KEPLER");
+followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,-pi*0.5}).setWorldType("DEPRIT_KEPLER");
 follower = leader.applyDeltaInDepritKeplerWorld(followerIntialDeltaFromLeaderCOE,...
  chosenBridgeFunctionHandle);
 
@@ -47,37 +47,23 @@ leaderDepritKeplerSemiMajorAxis = leader.position.getPositionInKeplerianDepritSp
 
 followerDepritKeplerSemiMajorAxis = follower.position.getPositionInKeplerianDepritSpace(chosenBridgeFunctionHandle).positionVector{1};
 
-deltaVelocity = Position("ECI",{0,0,0,0,0,0});
-funct = @(vx,vy) optimizationMetric( Position("ECI",{0,0,0,vx,vy,0}),...
+funct = @(x) optimizationMetric( Position("ECI",{0,0,0,x(1),x(2),x(3)}),...
  follower, chosenBridgeFunctionHandle, leader);
 
 
-lim = 0.00001;
-num = 101;
-
-vx = linspace(-lim,lim,num);
-vy = vx;
-
-solutions = zeros(num);
-
-for idx = 1:num
-    for jdx = 1:num
-        solutions(idx,jdx) = funct(vx(idx),vy(jdx));
-    end
-end
-% mesh(vx, vy, solutions)
-% hold on
-minSol = min(solutions,[],"all");
-% plot3(vx(I(1)),vy(I(2)),solutions(I(1),I(2)),"Marker","o","MarkerSize",12)
-[r,c] = find(solutions==minSol);
-VX = vx(r)
-VY = vy(c)
+ options = optimset('PlotFcns',@optimplotfval,"TolFun", 1e-8);
+[x,fval,exitflag,output] = fminsearch(funct, [0, 0, 0], options);
 
 
-function opt = optimizationMetric(dV,sat,bridgeFunction,leader)
+fprintf("%g,%g,%g\n",x(1),x(2),x(3))
+
+fprintf("%g [m/s]",norm(x)*1000)
+
+
+function opt = optimizationMetric(dV,follower,bridgeFunction,leader)
     arguments (Input)
         dV Position
-        sat Satellite
+        follower Satellite
         bridgeFunction function_handle
         leader Satellite
     end
@@ -86,18 +72,25 @@ function opt = optimizationMetric(dV,sat,bridgeFunction,leader)
         error("deltaV must be in ECI")
     end
 
-    followerPositionVector = sat.position.getAs("ECI").add(dV)...
-    .getPositionInKeplerianDepritSpace(bridgeFunction).positionVector;
-    leaderPositionVector = leader.position.getPositionInKeplerianDepritSpace(bridgeFunction).positionVector;
+    followerPosition = follower.position.getAs("ECI").add(dV)...
+    .getPositionInKeplerianDepritSpace(bridgeFunction);
+    leaderPosition = leader.position.getPositionInKeplerianDepritSpace(bridgeFunction);
     
-    opt = abs(followerPositionVector{CanonicalElementsEnum.SMA}-leaderPositionVector{CanonicalElementsEnum.SMA})/leaderPositionVector{CanonicalElementsEnum.SMA}... 
-    + abs(followerPositionVector{CanonicalElementsEnum.INC}-leaderPositionVector{CanonicalElementsEnum.INC})/leaderPositionVector{CanonicalElementsEnum.INC}...
-    + abs(followerPositionVector{CanonicalElementsEnum.ECC}-leaderPositionVector{CanonicalElementsEnum.ECC})/leaderPositionVector{CanonicalElementsEnum.ECC};
-
+    opt = abs(DepritHamiltonian(followerPosition) - DepritHamiltonian(leaderPosition));
 
 end
 
-
+function metric = calcRelativeMetric(followerPositionVector, leaderPositionVector, canonicalElementsEnum)
+    arguments (Input)
+        followerPositionVector (1,6)cell 
+        leaderPositionVector (1,6)cell
+        canonicalElementsEnum CanonicalElementsEnum
+    end
+    arguments (Output)
+        metric {mustBeNumeric} 
+    end
+    metric = abs(followerPositionVector{canonicalElementsEnum}-leaderPositionVector{canonicalElementsEnum})/leaderPositionVector{canonicalElementsEnum};
+end
 
 
 

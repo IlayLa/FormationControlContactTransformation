@@ -1,5 +1,5 @@
 clc
-close all
+% close all
 clear
 format longG
 addpath(genpath('./'));
@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*30;
+maxTime = day*20;
 timeVector = linspace(0,maxTime, 1e5+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
@@ -35,7 +35,7 @@ initialLeaderPosition = Position("COE",{sma0,ecc0,inc0,raan0,aop0,aota0});
 leader = Satellite(initialLeaderPosition);
 
 
-followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3});
+followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3}).setWorldType("DEPRIT_KEPLER");
 
 
 follower =...
@@ -47,29 +47,52 @@ follower =...
 
 satellites = [leader,follower];
 
+initialConditions = satellitesVectorToODEInitialConditions(satellites);
 
-% Define ODE solver
-ode_def = ode;
-ode_def.ODEFcn = multiSatFcn;
-ode_def.InitialValue = initialConditions;
-ode_def.Solver = "ode45";
-ode_def.RelativeTolerance = Defaults.RelTolerance;
-ode_def.AbsoluteTolerance = Defaults.AbsTolerance;
 
+numOfPulses = 1;
 % Define event sequence
+eventFunctions = repmat({
+    @realAndDepritHamiltoniansEqualForLeader;
+    @followerReachedLeadersEqualityTrueAnomaly;
+    },numOfPulses,1);
+
+% Define post-event actions
+postActions = repmat({
+    @(t, y, mem) storeLeaderTrueAnomally(t, y, mem);
+    @(t, y, mem) MatchHamiltonian(t, y, mem, chosenBridgeFunctionHandle);
+},numOfPulses,1);
+
+% Initial memory
+mem0 = struct('leaderTrueAnomalyAtHamiltonianEquality',0.0,"leaderHamiltonianValue",0.0);
+
+
+% Create propagator - specify event directions
+prop = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), eventFunctions, postActions, mem0);  % Only detect falling
+propNoControl = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), {}, {}, mem0);  % Only detect falling
+
+
+S = prop.solve(timeVector,initialConditions);
+sNoControl = propNoControl.solve(timeVector,initialConditions);
+
+[PolarNodalsRealSpaceSimResults,PolarNodalsDepritSimResults] = ...
+        extractPositionsFromSolutions(S, 2, chosenBridgeFunctionHandle);
+
+[PolarNodalsRealSpaceSimResultsNoControl,PolarNodalsDepritSimResultsNoControl] = ...
+        extractPositionsFromSolutions(sNoControl, 2, chosenBridgeFunctionHandle);
 
 
 
 
+%%
 
-
-
-
-
-
-
-
-
-
-
+dist = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1},PolarNodalsRealSpaceSimResults{2});
+plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("%d-pulse",numOfPulses))
+hold on
+% for eventIdx = 1:numel(S.events)
+%    xline(S.events(eventIdx).time/day) 
+% end
+distNoControl = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResultsNoControl{1},PolarNodalsRealSpaceSimResultsNoControl{2});
+plot(sNoControl.Time/day, distNoControl-distNoControl(1),"DisplayName","no control")
+legend
 

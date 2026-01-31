@@ -1,3 +1,3 @@
-function value = timeEvent(t,~,desiredTime)
+function value = timeEvent(t,~,desiredTime, ~)
 value = t-desiredTime;
 end
