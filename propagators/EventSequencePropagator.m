@@ -62,7 +62,7 @@ classdef EventSequencePropagator
             obj.absoluteTolerance = options.AbsoluteTolerance;
         end
         
-        function S = solve(obj, timeVector, startingConditions)
+        function S = solve(obj, timeVector, startingConditions, name)
             %SOLVE Execute the event sequence propagation
             %
             % Inputs:
@@ -78,13 +78,14 @@ classdef EventSequencePropagator
             %       segmentBounds : Indices marking segment boundaries
             %       odeResults    : Cell array of ODEResults for each segment
             
-            arguments
+            arguments (Input)
                 obj EventSequencePropagator
                 timeVector (1,:) {mustBeNumeric}
                 startingConditions (:,1) {mustBeNumeric}
+                name (1,1) string = "default name" 
             end
             
-            
+            fprintf("\nRunning Event Sequence: %s\n", name)
             nEvents = length(obj.eventFunctions);
             
             

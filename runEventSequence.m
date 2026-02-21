@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*80;
+maxTime = day*1;
 timeVector = linspace(0,maxTime, 1e5+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
@@ -50,7 +50,7 @@ satellites = [leader,follower];
 initialConditions = satellitesVectorToODEInitialConditions(satellites);
 
 
-numOfPulses = 1;
+numOfPulses = 2;
 % Define event sequence
 eventFunctions = repmat({
     @realAndDepritHamiltoniansEqualForLeader;
@@ -72,8 +72,8 @@ prop = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpa
 propNoControl = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), {}, {}, mem0); 
 
 
-S = prop.solve(timeVector,initialConditions);
-sNoControl = propNoControl.solve(timeVector,initialConditions);
+S = prop.solve(timeVector,initialConditions, "Hamiltonian Matching Sequence");
+sNoControl = propNoControl.solve(timeVector,initialConditions, "No Pulse Control");
 
 [PolarNodalsRealSpaceSimResults,PolarNodalsDepritSimResults] = ...
         extractPositionsFromSolutions(S, 2, chosenBridgeFunctionHandle);
@@ -84,20 +84,20 @@ sNoControl = propNoControl.solve(timeVector,initialConditions);
 
 dist = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1},PolarNodalsRealSpaceSimResults{2});
 
-plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("%d-pulse",numOfPulses))
+plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("initial conditions with pulse at hamiltonian equilibrium of leader (%d-pulses)",numOfPulses))
 hold on
-% for eventIdx = 1:numel(S.events)
-%    xline(S.events(eventIdx).time/day) 
-% end
+for eventIdx = 1:numel(S.events)
+   xline(S.events(eventIdx).time/day) 
+end
 distNoControl = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResultsNoControl{1},PolarNodalsRealSpaceSimResultsNoControl{2});
-plot(sNoControl.Time/day, distNoControl-distNoControl(1),"DisplayName","no control")
+plot(sNoControl.Time/day, distNoControl-distNoControl(1),"DisplayName","only initial conditions")
 legend
 
 title("Satellite Distance Drift From Initial Distance")
 subtitle("Normalized Initial Distance To Zero")
 xlabel("time [days]")
 ylabel("Distance Drift [km]")
-legend("only initial conditions","initial conditions with pulse at hamiltonian equilibrium of leader")
+
 
 
 
