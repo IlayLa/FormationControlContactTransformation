@@ -1,11 +1,14 @@
-function dY = vectorizedStateSpace(stateFcn, ~, Y, varargin)
-% Y is 6×N
-% stateFcn expects 6×1
+function dY = vectorizedStateSpace(stateFcn, t, y)
+    N = numel(y)/Consts.numOfVarsInSS;
+    if mod(N,1)~=0 
+        error("input has wrong number of items to be describing an integer number of satellites")
+    end
+    
+    dY = zeros(size(y));
 
-N = size(Y,2);
-dY = zeros(size(Y));
 
-for k = 1:N
-    dY(:,k) = stateFcn(Y(:,k), varargin{:});
-end
+    for k = 0:(N-1)
+        indices =  (Consts.numOfVarsInSS*k+1):(Consts.numOfVarsInSS*(k+1));
+        dY(indices) = stateFcn(t, y(indices));
+    end
 end

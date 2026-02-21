@@ -23,8 +23,8 @@ classdef EventSequencePropagator
                 postEventProcess (1,:) cell
                 memoryStruct struct
                 options.Solver = "auto"
-                options.RelativeTolerance = 1e-3
-                options.AbsoluteTolerance = 1e-6
+                options.RelativeTolerance = Defaults.RelTolerance
+                options.AbsoluteTolerance = Defaults.AbsTolerance
                 options.EventDirections = "both"  % Can be scalar or cell array
             end
             
@@ -62,7 +62,7 @@ classdef EventSequencePropagator
             obj.absoluteTolerance = options.AbsoluteTolerance;
         end
         
-        function S = solve(obj, timeVector, y0)
+        function S = solve(obj, timeVector, startingConditions, name)
             %SOLVE Execute the event sequence propagation
             %
             % Inputs:
@@ -78,17 +78,16 @@ classdef EventSequencePropagator
             %       segmentBounds : Indices marking segment boundaries
             %       odeResults    : Cell array of ODEResults for each segment
             
-            arguments
+            arguments (Input)
                 obj EventSequencePropagator
                 timeVector (1,:) {mustBeNumeric}
-                y0 (:,1) {mustBeNumeric}
+                startingConditions (:,1) {mustBeNumeric}
+                name (1,1) string = "default name" 
             end
             
-            % Ensure timeVector is a column vector
-            timeVector = timeVector(:);
-            
+            fprintf("\nRunning Event Sequence: %s\n", name)
             nEvents = length(obj.eventFunctions);
-            nStates = length(y0);
+            
             
             % Preallocate storage for maximum possible segments (events + final)
             maxSegments = nEvents + 1;
@@ -108,7 +107,7 @@ classdef EventSequencePropagator
             
             % Current state
             t_current = timeVector(1);
-            y_current = y0;
+            y_current = startingConditions;
             memory = obj.memoryStruct;
             
             % Remaining time points (all requested times >= t_current)
@@ -172,7 +171,7 @@ classdef EventSequencePropagator
                     
                     % Update remaining time vector: [t_event, all times > t_event]
                     t_current = t_event;
-                    remainingTimes = [t_event; timeVector(timeVector > t_event)];
+                    remainingTimes = [t_event, timeVector(timeVector > t_event)];
                     
                 else
                     % Event didn't trigger - reached end time
