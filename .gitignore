@@ -40,5 +40,5 @@ codegen/
 *.sbproj.bak
 
 # Images
-.png
-.jpg
+*.png
+*.jpg
