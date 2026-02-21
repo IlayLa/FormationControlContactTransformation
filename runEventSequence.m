@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*20;
+maxTime = day*80;
 timeVector = linspace(0,maxTime, 1e5+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
@@ -82,10 +82,6 @@ sNoControl = propNoControl.solve(timeVector,initialConditions);
         extractPositionsFromSolutions(sNoControl, 2, chosenBridgeFunctionHandle);
 
 
-
-
-%%
-
 dist = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1},PolarNodalsRealSpaceSimResults{2});
 
 plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("%d-pulse",numOfPulses))
@@ -96,4 +92,13 @@ hold on
 distNoControl = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResultsNoControl{1},PolarNodalsRealSpaceSimResultsNoControl{2});
 plot(sNoControl.Time/day, distNoControl-distNoControl(1),"DisplayName","no control")
 legend
+
+title("Satellite Distance Drift From Initial Distance")
+subtitle("Normalized Initial Distance To Zero")
+xlabel("time [days]")
+ylabel("Distance Drift [km]")
+legend("only initial conditions","initial conditions with pulse at hamiltonian equilibrium of leader")
+
+
+
 
