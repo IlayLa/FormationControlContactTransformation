@@ -80,16 +80,16 @@ function opt = optimizationMetric(dV,follower,bridgeFunction,leader)
 
 end
 
-function metric = calcRelativeMetric(followerPositionVector, leaderPositionVector, canonicalElementsEnum)
+function metric = calcRelativeMetric(followerPositionVector, leaderPositionVector, CanonicalOrbitalElementsEnum)
     arguments (Input)
         followerPositionVector (1,6)cell 
         leaderPositionVector (1,6)cell
-        canonicalElementsEnum CanonicalElementsEnum
+        CanonicalOrbitalElementsEnum CanonicalOrbitalElementsEnum
     end
     arguments (Output)
         metric {mustBeNumeric} 
     end
-    metric = abs(followerPositionVector{canonicalElementsEnum}-leaderPositionVector{canonicalElementsEnum})/leaderPositionVector{canonicalElementsEnum};
+    metric = abs(followerPositionVector{CanonicalOrbitalElementsEnum}-leaderPositionVector{CanonicalOrbitalElementsEnum})/leaderPositionVector{CanonicalOrbitalElementsEnum};
 end
 
 

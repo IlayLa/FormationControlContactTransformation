@@ -1,5 +1,5 @@
 clc
-% close all
+close all
 clear
 format longG
 addpath(genpath('./'));
@@ -87,6 +87,7 @@ sNoControl = propNoControl.solve(timeVector,initialConditions);
 %%
 
 dist = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1},PolarNodalsRealSpaceSimResults{2});
+
 plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("%d-pulse",numOfPulses))
 hold on
 % for eventIdx = 1:numel(S.events)

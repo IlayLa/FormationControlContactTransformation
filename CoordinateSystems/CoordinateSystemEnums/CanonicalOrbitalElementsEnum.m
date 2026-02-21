@@ -1,4 +1,4 @@
-classdef CanonicalElementsEnum < int32
+classdef CanonicalOrbitalElementsEnum < int32
     enumeration
         SMA    (1) % Semi Major Axis
         ECC    (2) % Eccentricity
