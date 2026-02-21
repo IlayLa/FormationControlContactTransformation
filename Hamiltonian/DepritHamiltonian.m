@@ -12,7 +12,7 @@ k = -Consts.J2*(Consts.Req^2)/2;
 c = Nu/Theta;
 p = r*(1+ecc*cos(aota));
 
-depritHamil = KeplerHamiltonian(r,R,Theta) ...
+depritHamil = KeplerHamiltonian(position) ...
     + k*Consts.mu*(1-3*c^2)/(2*p*r^2);
 
 end
