@@ -28,8 +28,9 @@ function opt = optimizationMetric(dV,follower,bridgeFunction, mem)
         error("deltaV must be in ECI")
     end
 
-    followerPosition = follower.position.getAs("ECI").add(dV);
+    followerPosition = follower.position.getAs("ECI").add(dV).getPositionInKeplerianDepritSpace(bridgeFunction);
     
-    opt = abs(J2Hamiltonian(followerPosition) - mem.leaderHamiltonianValue);
+    
+    opt = abs(KeplerHamiltonian(followerPosition) - mem.leaderHamiltonianValue);
 
 end

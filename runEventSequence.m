@@ -59,7 +59,7 @@ eventFunctions = repmat({
 
 % Define post-event actions
 postActions = repmat({
-    @(t, y, mem) storeLeaderTrueAnomally(t, y, mem);
+    @(t, y, mem) storeLeaderInformationForFollowerPulse(t, y, mem);
     @(t, y, mem) MatchHamiltonian(t, y, mem, chosenBridgeFunctionHandle);
 },numOfPulses,1);
 
@@ -68,8 +68,8 @@ mem0 = struct('leaderTrueAnomalyAtHamiltonianEquality',0.0,"leaderHamiltonianVal
 
 
 % Create propagator - specify event directions
-prop = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), eventFunctions, postActions, mem0);  % Only detect falling
-propNoControl = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), {}, {}, mem0);  % Only detect falling
+prop = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), eventFunctions, postActions, mem0);
+propNoControl = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), {}, {}, mem0); 
 
 
 S = prop.solve(timeVector,initialConditions);
