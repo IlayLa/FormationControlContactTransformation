@@ -60,6 +60,33 @@ classdef Position < handle
             depritKeplerianPosition.worldType = WorldTypeEnum.DEPRIT_KEPLER;
         end
 
+        function PolarNodalsDepritJ2 = getPositionInJ2Deprit(obj, bridgeFunction)
+            arguments (Input)
+                obj Position
+                bridgeFunction function_handle
+            end
+            arguments (Output)
+                PolarNodalsDepritJ2 Position
+            end
+            if obj.worldType == WorldTypeEnum.DEPRIT_J2
+                PolarNodalsDepritJ2 = obj;
+                return 
+            else
+                switch obj.worldType
+                    case WorldTypeEnum.FULL_J2
+                        polarNodalsPositionVector = obj.getAs("PN").positionVector;
+                        bridgeToDepritSpaceValue = bridgeFunction(polarNodalsPositionVector{:},Consts.mu,Consts.J2,Consts.Req);
+                        PolarNodalsDepritJ2 = Position("PN",num2cell([polarNodalsPositionVector{:}]+bridgeToDepritSpaceValue));
+                        PolarNodalsDepritJ2.worldType = WorldTypeEnum.DEPRIT_J2;
+                        return
+                    case WorldTypeEnum.DEPRIT_KEPLER
+                        PolarNodalsDepritJ2 = obj.getAs("PNSTAR").getAs("PN");
+                        PolarNodalsDepritJ2.worldType = WorldTypeEnum.DEPRIT_J2;
+                        return
+                end
+            end
+        end
+
         function fullJ2Position = getPositionInFullJ2World(obj, bridgeFunction)
             arguments (Input)
                 obj Position
