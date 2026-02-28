@@ -195,7 +195,7 @@ classdef EventSequencePropagator
                        RelativeTolerance=obj.relativeTolerance, ...
                        AbsoluteTolerance=obj.absoluteTolerance);
                 
-                odeResult = solve(F, remainingTimes(1), remainingTimes(end));
+                odeResult = solve(F, remainingTimes);
                 
                 odeResultsVector{segmentIdx} = odeResult;
                 segmentIdx = segmentIdx + 1;

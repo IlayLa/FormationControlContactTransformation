@@ -10,7 +10,7 @@ hour = 60*minute;
 day = 24*hour;
 year = 365*day;
 maxTime = day*50;
-timeVector = linspace(0,maxTime, 1e5+1);
+timeVector = [0,maxTime];
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
 %ecc0 = 0.0002542;
@@ -35,7 +35,7 @@ initialLeaderPosition = Position("COE",{sma0,ecc0,inc0,raan0,aop0,aota0});
 leader = Satellite(initialLeaderPosition);
 
 
-followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,pi/3}).setWorldType("DEPRIT_KEPLER");
+followerIntialDeltaFromLeaderCOE = Position("COE",{0,0,0,0,0,deg2rad(100)}).setWorldType("DEPRIT_KEPLER");
 
 
 follower =...
