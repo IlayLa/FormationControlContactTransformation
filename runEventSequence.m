@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*1;
+maxTime = day*50;
 timeVector = linspace(0,maxTime, 1e5+1);
 plotTimeVector = timeVector/day;
 % initial conditions in COEs J2 real space
@@ -49,22 +49,8 @@ satellites = [leader,follower];
 
 initialConditions = satellitesVectorToODEInitialConditions(satellites);
 
-
-numOfPulses = 2;
-% Define event sequence
-eventFunctions = repmat({
-    @realAndDepritHamiltoniansEqualForLeader;
-    @followerReachedLeadersEqualityTrueAnomaly;
-    },numOfPulses,1);
-
-% Define post-event actions
-postActions = repmat({
-    @(t, y, mem) storeLeaderInformationForFollowerPulse(t, y, mem);
-    @(t, y, mem) MatchHamiltonian(t, y, mem, chosenBridgeFunctionHandle);
-},numOfPulses,1);
-
-% Initial memory
-mem0 = struct('leaderTrueAnomalyAtHamiltonianEquality',0.0,"leaderHamiltonianValue",0.0);
+numOfPulses = 1;
+[eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle);
 
 
 % Create propagator - specify event directions
@@ -84,21 +70,15 @@ sNoControl = propNoControl.solve(timeVector,initialConditions, "No Pulse Control
 
 dist = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResults{1},PolarNodalsRealSpaceSimResults{2});
 
-plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("initial conditions with pulse at hamiltonian equilibrium of leader (%d-pulses)",numOfPulses))
-hold on
-for eventIdx = 1:numel(S.events)
-   xline(S.events(eventIdx).time/day) 
-end
+figure
 distNoControl = physicalDistanceFromPolarNodals(PolarNodalsRealSpaceSimResultsNoControl{1},PolarNodalsRealSpaceSimResultsNoControl{2});
 plot(sNoControl.Time/day, distNoControl-distNoControl(1),"DisplayName","only initial conditions")
+hold on
+plot(S.Time/day, dist-dist(1), 'DisplayName',sprintf("initial conditions with pulse at hamiltonian equilibrium of leader (%d-pulses)",numOfPulses))
 legend
 
 title("Satellite Distance Drift From Initial Distance")
 subtitle("Normalized Initial Distance To Zero")
 xlabel("time [days]")
 ylabel("Distance Drift [km]")
-
-
-
-
 
