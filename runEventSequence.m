@@ -9,9 +9,10 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*1;
-timeVector = linspace(0,maxTime,1e1+1);
+maxTime = day*200;
+timeVector = linspace(0,maxTime,1e5+1);
 plotTimeVector = timeVector/day;
+
 % initial conditions in COEs J2 real space
 %ecc0 = 0.0002542;
 % inc0 = deg2rad(28.4704);
@@ -30,12 +31,15 @@ aop0 = deg2rad(146.8877);
 aota0 = 0;
 initialAOTADelta = deg2rad(100);
 chosenBridgeFunctionHandle = @bridgeToDepritSpace;
-numOfPulses = 1;
+
+
+numOfPulses = 0;
 [eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle);
-
+eventSequenceDefinition = @hamiltonianMatchingSequenceDefinition;
 S = runningEventSequenceWrapper(sma0,ecc0,inc0,raan0,aop0,aota0,...
-initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions,postActions,...
-mem0,timeVector);
+initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions, postActions, mem0,timeVector);
+
+[distanceOverTime, averageDistanceOverLastDay] = getAverageofDistanceOverLastDayOfSimulation(S, 2);
 
 
-getAverageofDistanceOverLastDayOfSimulation(S,2)
+plot(S.Time/day,distanceOverTime-distanceOverTime(1))

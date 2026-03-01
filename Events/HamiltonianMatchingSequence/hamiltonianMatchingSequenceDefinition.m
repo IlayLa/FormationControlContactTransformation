@@ -1,4 +1,4 @@
-function [eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefinition(numOfPulses,chosenBridgeFunctionHandle)
+function [eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle)
     arguments (Input)
         numOfPulses {mustBeInteger}
         chosenBridgeFunctionHandle function_handle

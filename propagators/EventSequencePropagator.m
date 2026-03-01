@@ -145,6 +145,10 @@ classdef EventSequencePropagator
                 % Solve over remaining time span
                 odeResult = solve(F, remainingTimes);
                 
+                % Deal with NaN values
+                % Trim NaN padding from early event termination
+                odeResult = obj.trimNaNValuesFromEarlyTerminatingEvents(odeResult);
+
                 % Store the ODEResults object
                 odeResultsVector{segmentIdx} = odeResult;
                 segmentIdx = segmentIdx + 1;
@@ -197,6 +201,10 @@ classdef EventSequencePropagator
                 
                 odeResult = solve(F, remainingTimes);
                 
+                % Deal with NaN values
+                % Trim NaN padding from early event termination
+                odeResult = obj.trimNaNValuesFromEarlyTerminatingEvents(odeResult);
+
                 odeResultsVector{segmentIdx} = odeResult;
                 segmentIdx = segmentIdx + 1;
             end
@@ -222,6 +230,20 @@ classdef EventSequencePropagator
     end
     
     methods (Access = private)
+
+
+        function odeResult = trimNaNValuesFromEarlyTerminatingEvents(obj, odeResult)
+            validMask = ~any(isnan(odeResult.Solution), 1);
+            odeResult = struct(...
+                'Time',         odeResult.Time(validMask), ...
+                'Solution',     odeResult.Solution(:, validMask), ...
+                'Sensitivity', odeResult.Sensitivity,...
+                'EventTime',    odeResult.EventTime, ...
+                'EventSolution',odeResult.EventSolution,...
+                'EventIndex', odeResult.EventIndex,...
+                'EventSensitivity', odeResult.EventSensitivity...
+                );
+        end
         
         function [Time_all, Solution_all, segmentBounds] = concatenateResults(obj, odeResultsVector)
             %CONCATENATERESULTS Efficiently concatenate all segment results
