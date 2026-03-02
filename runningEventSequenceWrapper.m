@@ -1,4 +1,4 @@
-function S = runningEventSequenceWrapper(sma0,ecc0,inc0,raan0,aop0,aota0,initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions,postActions,mem0,timeVector)
+function S = runningEventSequenceWrapper(sma0,ecc0,inc0,raan0,aop0,aota0,initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions,postActions,mem0,timeVector,name)
 initialLeaderPosition = Position("COE",{sma0,ecc0,inc0,raan0,aop0,aota0});
 leader = Satellite(initialLeaderPosition);
 
@@ -22,5 +22,5 @@ initialConditions = satellitesVectorToODEInitialConditions(satellites);
 prop = EventSequencePropagator(@(t,y,mem) vectorizedStateSpace(@(t,y) j2StateSpace(t,y, Consts.mu,Consts.J2,Consts.Req), t, y), eventFunctions, postActions, mem0);
 
 
-S = prop.solve(timeVector,initialConditions, "Hamiltonian Matching Sequence");
+S = prop.solve(timeVector,initialConditions,name);
 end

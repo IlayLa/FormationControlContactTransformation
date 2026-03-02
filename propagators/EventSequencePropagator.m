@@ -225,6 +225,7 @@ classdef EventSequencePropagator
             S.segmentBounds = segmentBounds;
             S.nEvents = nTriggeredEvents;
             S.odeResults = odeResultsVector;
+            S.name = name;
         end
         
     end

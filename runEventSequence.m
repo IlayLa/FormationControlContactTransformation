@@ -33,11 +33,11 @@ initialAOTADelta = deg2rad(100);
 chosenBridgeFunctionHandle = @bridgeToDepritSpace;
 
 
-numOfPulses = 0;
-[eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle);
+numOfPulses = 1;
+[eventFunctions, postActions, mem0, name] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle);
 eventSequenceDefinition = @hamiltonianMatchingSequenceDefinition;
 S = runningEventSequenceWrapper(sma0,ecc0,inc0,raan0,aop0,aota0,...
-initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions, postActions, mem0,timeVector);
+initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions, postActions, mem0,timeVector,name);
 
 [distanceOverTime, averageDistanceOverLastDay] = getAverageofDistanceOverLastDayOfSimulation(S, 2);
 

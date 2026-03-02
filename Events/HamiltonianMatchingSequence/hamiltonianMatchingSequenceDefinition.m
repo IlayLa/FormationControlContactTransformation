@@ -1,4 +1,4 @@
-function [eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle)
+function [eventFunctions, postActions, mem0, name] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle)
     arguments (Input)
         numOfPulses {mustBeInteger}
         chosenBridgeFunctionHandle function_handle
@@ -17,4 +17,7 @@ function [eventFunctions, postActions, mem0] = hamiltonianMatchingSequenceDefini
 
     % Initial memory
     mem0 = struct('leaderTrueAnomalyAtHamiltonianEquality',0.0,"leaderHamiltonianValue",0.0);
+
+    % Name
+    name = "Hamiltonian Matching Sequence";
 end
