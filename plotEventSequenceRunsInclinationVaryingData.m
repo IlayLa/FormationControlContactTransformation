@@ -16,9 +16,9 @@ end
 
 
 figure
-plot(inclinations, withControl, "DisplayName", "With Control Pulse","Marker","square","Color","b","LineStyle","--")
+plot(inclinations, abs(withControl), "DisplayName", "With Control Pulse","Marker","*","Color","g","LineStyle","--")
 hold on
-plot(inclinations, withoutControl, "DisplayName", "Without Control Pulse","Marker","v","Color","r","LineStyle","--")
+plot(inclinations, abs(withoutControl), "DisplayName", "Without Control Pulse","Marker","v","Color","r","LineStyle","--")
 xlabel("Inclination [deg]")
 ylabel("Drift [km]")
 title("Average Drift Value Over Last Day of Simulation VS Initial Inclination")

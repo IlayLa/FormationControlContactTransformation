@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*60;
+maxTime = day*10;
 timeVector = linspace(0,maxTime,1e5+1);
 plotTimeVector = timeVector/day;
 
@@ -18,16 +18,16 @@ plotTimeVector = timeVector/day;
 % Inputs
 ecc0 = 0.0002542;
 sma0 = (525+Consts.Req)/(1-ecc0);
-inc0 = deg2rad(70);
+inc0 = deg2rad(2);
 raan0 = deg2rad(47.8475);
 aop0 = deg2rad(146.8877);
 aota0 = 0;
 chosenBridgeFunctionHandle = @bridgeToDepritSpace;
 numOfPulses = 1;
-% initialAOTADelta = deg2rad(60);
+initialAOTADelta = deg2rad(60);
 [eventFunctions, postActions, mem0, name] = hamiltonianMatchingSequenceDefinition(numOfPulses, chosenBridgeFunctionHandle);
 
-numOfVariations = 3e1+1;
+numOfVariations = 1e2+1;
 
 csvTitle = ["Semi_Major_Axis__km", "Eccentricity___", "Inclination__degree",...
         "Right_Ascention_Of_Ascending_Node__degree","Argument_Of_Perigee_degree",...
@@ -37,19 +37,19 @@ csvTitle = ["Semi_Major_Axis__km", "Eccentricity___", "Inclination__degree",...
         "Average_Drift_Over_Last_Day_of_Simulation_Without_Control__km"];
 
 
-initialAOTADeltaVector = linspace(deg2rad(2), deg2rad(178), numOfVariations);
+anglesVector = linspace(deg2rad(0), deg2rad(360), numOfVariations);
 resultsData = cell(numOfVariations, length(csvTitle));
 
 parfor i = 1:numOfVariations
-    initialAOTADelta = initialAOTADeltaVector(i);
+    initialAOTADelta = anglesVector(i);
     S = runningEventSequenceWrapper(sma0,ecc0,inc0,raan0,aop0,aota0,...
     initialAOTADelta,chosenBridgeFunctionHandle,eventFunctions, postActions, mem0,timeVector,name);
     sNoControl = runningEventSequenceWrapper(sma0,ecc0,inc0,raan0,aop0,aota0,...
     initialAOTADelta,chosenBridgeFunctionHandle,{}, {}, mem0,timeVector,name);
     [distanceOverTime, averageDistanceOverLastDay] = getAverageofDistanceOverLastDayOfSimulation(S, 2);
-    averageDriftValueOverLastDayWithControl  = abs(averageDistanceOverLastDay - distanceOverTime(1));
+    averageDriftValueOverLastDayWithControl  = (averageDistanceOverLastDay - distanceOverTime(1));
     [distanceOverTime, averageDistanceOverLastDay] = getAverageofDistanceOverLastDayOfSimulation(sNoControl, 2);
-    averageDriftValueOverLastDayWithoutControl  = abs(averageDistanceOverLastDay - distanceOverTime(1));
+    averageDriftValueOverLastDayWithoutControl  = (averageDistanceOverLastDay - distanceOverTime(1));
     % Store one row of results
         resultsData(i,:) = {
             sma0,  ... 
@@ -70,7 +70,7 @@ end
 
 % Write to CSV after parfor completes
 outputTable = cell2table(resultsData, VariableNames=csvTitle);
-writetable(outputTable, sprintf('results_varying_initial_aota_delta.csv'));
+writetable(outputTable, sprintf('results_varying_initial_aota_delta_zero_inclination.csv'));
 fprintf('Results written to CSV.\n');
 
 

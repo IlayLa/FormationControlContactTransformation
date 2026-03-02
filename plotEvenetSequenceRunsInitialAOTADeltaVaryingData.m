@@ -5,7 +5,7 @@ format longG
 addpath(genpath('./'));
 
 
-initialAOTADeltaVaryingData = readtable("results_varying_initial_aota_delta.csv");
+initialAOTADeltaVaryingData = readtable("results_varying_initial_aota_delta_zero_inclination.csv");
 initialAOTADelta = initialAOTADeltaVaryingData.Initial_Argument_of_True_Anomaly_Delta__degree;
 withControl = initialAOTADeltaVaryingData.Average_Drift_Over_Last_Day_Of_Simulation_With_Control__km;
 withoutControl = initialAOTADeltaVaryingData.Average_Drift_Over_Last_Day_of_Simulation_Without_Control__km;

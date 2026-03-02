@@ -9,7 +9,7 @@ minute = 60;
 hour = 60*minute;
 day = 24*hour;
 year = 365*day;
-maxTime = day*200;
+maxTime = day*10;
 timeVector = linspace(0,maxTime,1e5+1);
 plotTimeVector = timeVector/day;
 
@@ -24,7 +24,7 @@ plotTimeVector = timeVector/day;
 
 % Inputs
 ecc0 = 0.0002542;
-inc0 = deg2rad(28.4704);
+inc0 = deg2rad(0.4704);
 sma0 = (525+Consts.Req)/(1-ecc0);
 raan0 = deg2rad(47.8475);
 aop0 = deg2rad(146.8877);
