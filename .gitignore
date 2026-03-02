@@ -42,3 +42,6 @@ codegen/
 # Images
 *.png
 *.jpg
+
+# Data
+*.csv
